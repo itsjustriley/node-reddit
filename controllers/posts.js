@@ -17,4 +17,15 @@ module.exports = (app) => {
     });
   }); 
 
+  // INDEX
+  app.get('/', async (req, res) => {
+    try {
+      const posts = await Post.find({}).lean();
+      return res.render('posts-index', { posts });
+    } catch (err) {
+      console.log(err.message);
+    }
+  });
 }; 
+
+

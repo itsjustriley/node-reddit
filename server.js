@@ -29,8 +29,9 @@ app.set('views', 'views');
 // routes
 
 app.get('/', (req, res) => {
-  res.render('index', { layout: 'main' });
+  res.render('posts-index', { layout: 'main' });
 });
+
 
 app.get('/posts/new', (req, res) => {
   res.render('posts-new', { layout: 'main' });
