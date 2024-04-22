@@ -1,33 +1,39 @@
 const Post = require('../models/post');
+const Comment = require('../models/comment');
+const User = require('../models/user');
 
 module.exports = (app) => {
 
   // NEW
   app.get('/posts/new', (req, res) => {
-    res.render('posts-new');
+    if (req.user) {
+      return res.render('posts-new');
+    } else {
+      return res.status(401); // UNAUTHORIZED
+    }
   });
 
   // CREATE
 
   app.post('/posts/new', async (req, res) => {
-    try {
-      const currentUser = await req.user;
-      if (currentUser) {
+    if (req.user) {
+      try  {
         const post = new Post(req.body);
-  
+        post.author = req.user._id;
         post.save(() => res.redirect('/'));
-      } else {
-        return res.status(401); // UNAUTHORIZED
+        console.log(post);
+      } catch (err) {
+        console.log(err.message);
       }
-    } catch (err) {
-      console.log(err.message);
+    } else {
+      return res.status(401); // UNAUTHORIZED
     }
   });
 
   // INDEX
   app.get('/', async (req, res) => {
     try {
-      const currentUser = await req.user;
+      const currentUser = req.user;
       const posts = await Post.find({}).lean();
       return res.render('posts-index', { posts, currentUser });
     } catch (err) {

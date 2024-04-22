@@ -8,6 +8,7 @@ const postSchema = new Schema({
   updatedAt: { type: Date, default: Date.now },
   subreddit: { type: String, required: true },
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 module.exports = model('Post', postSchema);

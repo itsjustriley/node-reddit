@@ -6,24 +6,28 @@ module.exports = app => {
   app.get('/sign-up', (req, res) => {
     res.render('sign-up');
   });
-  // SIGN UP POST
-  app.post('/sign-up', (req, res) => {
-    console.log(req.body);
-    // compare passwords 
-    if (req.body.password !== req.body.confirmPassword) {
-      // Passwords do not match
-      return res.status(400).send({ message: 'Passwords do not match' });
-    }
-    // Create User and JWT
-    const user = new User(req.body);
 
-    user
-    .save()
-    .then(() => {
+  // SIGN UP POST
+  app.post('/sign-up', async (req, res) => {
+    try {
+      console.log(req.body);
+      // compare passwords 
+      if (req.body.password !== req.body.confirmPassword) {
+        // Passwords do not match
+        return res.status(400).send({ message: 'Passwords do not match' });
+      }
+      // Create User and JWT
+      const user = new User(req.body);
+
+      await user.save();
+
       const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '60 days' });
       res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
       return res.redirect('/');
-    });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).send({ err });
+    }
   });
 
   // LOGOUT
@@ -57,9 +61,10 @@ module.exports = app => {
         const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
           expiresIn: '60 days',
         });
-        const maxAge = req.body.rememberMe ? 900000 : 0;
+        const maxAge = req.body.rememberMe ? 2592000000 : 900000;
         // Set a cookie and redirect to root
         res.cookie('nToken', token, { maxAge, httpOnly: true });
+
         return res.redirect('/');
       });
     } catch (err) {
