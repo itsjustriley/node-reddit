@@ -5,7 +5,8 @@ const postSchema = new Schema({
   url: { type: String, required: true },
   summary: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
+  subreddit: { type: String, required: true }
 });
 
 module.exports = model('Post', postSchema);

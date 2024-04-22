@@ -32,13 +32,6 @@ app.get('/', (req, res) => {
   res.render('posts-index', { layout: 'main' });
 });
 
-
-app.get('/posts/new', (req, res) => {
-  res.render('posts-new', { layout: 'main' });
-});
-
-
-
 // listen
 
 app.listen(5000, () => {
