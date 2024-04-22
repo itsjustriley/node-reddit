@@ -1,6 +1,15 @@
 const express = require('express');
 const app = express();
+
+require('./data/reddit-db');
+
 app.use(express.static('public'));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+require('./controllers/posts')(app);
+
 
 const handlebars = require('express-handlebars');
 
@@ -11,6 +20,8 @@ const hbs = handlebars.create({
   }
 });
 
+
+
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', 'views');
@@ -20,6 +31,12 @@ app.set('views', 'views');
 app.get('/', (req, res) => {
   res.render('index', { layout: 'main' });
 });
+
+app.get('/posts/new', (req, res) => {
+  res.render('posts-new', { layout: 'main' });
+});
+
+
 
 // listen
 
