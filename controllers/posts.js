@@ -20,8 +20,12 @@ module.exports = (app) => {
       try  {
         const post = new Post(req.body);
         post.author = req.user._id;
-        post.save(() => res.redirect('/'));
+        await post.save();
+        const user = await User.findById(req.user._id);
+        user.posts.unshift(post);
+        await user.save();
         console.log(post);
+        return res.redirect(`/posts/${post._id}`);
       } catch (err) {
         console.log(err.message);
       }
@@ -34,7 +38,8 @@ module.exports = (app) => {
   app.get('/', async (req, res) => {
     try {
       const currentUser = req.user;
-      const posts = await Post.find({}).lean();
+      console.log(req.cookies);
+      const posts = await Post.find({}).lean().populate('author');
       return res.render('posts-index', { posts, currentUser });
     } catch (err) {
       console.log(err.message);
@@ -44,7 +49,7 @@ module.exports = (app) => {
   // SHOW
   app.get('/posts/:id', async (req, res) => {
     try {
-      const post = await Post.findById(req.params.id).lean().populate('comments');
+      const post = await Post.findById(req.params.id).lean().populate('comments').populate('author');
       res.render('posts-show', { post });
     } catch (err) {
       console.log(err.message);
@@ -55,7 +60,7 @@ module.exports = (app) => {
   // SUBREDDIT
   app.get('/n/:subreddit', async (req, res) => {
     try {
-      const posts = await Post.find({ subreddit: req.params.subreddit }).lean();
+      const posts = await Post.find({ subreddit: req.params.subreddit }).lean().populate('author');
       res.render('posts-index', { posts });
     }
     catch (err) {
