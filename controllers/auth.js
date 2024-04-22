@@ -8,6 +8,11 @@ module.exports = app => {
   });
   // SIGN UP POST
   app.post('/sign-up', (req, res) => {
+    // compare passwords 
+    if (req.body.password !== req.body.passwordConfirmation) {
+      // Passwords do not match
+      return res.status(400).send({ message: 'Passwords do not match' });
+    }
     // Create User and JWT
     const user = new User(req.body);
 
@@ -51,8 +56,9 @@ module.exports = app => {
         const token = jwt.sign({ _id: user._id, username: user.username }, process.env.SECRET, {
           expiresIn: '60 days',
         });
+        const maxAge = req.body.rememberMe ? 900000 : 0;
         // Set a cookie and redirect to root
-        res.cookie('nToken', token, { maxAge: 900000, httpOnly: true });
+        res.cookie('nToken', token, { maxAge, httpOnly: true });
         return res.redirect('/');
       });
     } catch (err) {
