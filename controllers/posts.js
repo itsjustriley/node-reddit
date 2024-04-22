@@ -8,25 +8,28 @@ module.exports = (app) => {
   });
 
   // CREATE
-  app.post('/posts/new', (req, res) => {
-    // INSTANTIATE INSTANCE OF POST MODEL
-    const post = new Post(req.body);
 
-    // SAVE INSTANCE OF POST MODEL TO DB AND REDIRECT TO THE ROOT
-    post.save()
-    .then(() => {
-      res.redirect('/');
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }); 
+  app.post('/posts/new', async (req, res) => {
+    try {
+      const currentUser = await req.user;
+      if (currentUser) {
+        const post = new Post(req.body);
+  
+        post.save(() => res.redirect('/'));
+      } else {
+        return res.status(401); // UNAUTHORIZED
+      }
+    } catch (err) {
+      console.log(err.message);
+    }
+  });
 
   // INDEX
   app.get('/', async (req, res) => {
     try {
+      const currentUser = await req.user;
       const posts = await Post.find({}).lean();
-      return res.render('posts-index', { posts });
+      return res.render('posts-index', { posts, currentUser });
     } catch (err) {
       console.log(err.message);
     }

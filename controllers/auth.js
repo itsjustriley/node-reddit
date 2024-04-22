@@ -8,8 +8,9 @@ module.exports = app => {
   });
   // SIGN UP POST
   app.post('/sign-up', (req, res) => {
+    console.log(req.body);
     // compare passwords 
-    if (req.body.password !== req.body.passwordConfirmation) {
+    if (req.body.password !== req.body.confirmPassword) {
       // Passwords do not match
       return res.status(400).send({ message: 'Passwords do not match' });
     }
