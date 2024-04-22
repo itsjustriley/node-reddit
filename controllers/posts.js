@@ -26,6 +26,16 @@ module.exports = (app) => {
       console.log(err.message);
     }
   });
+
+  // SHOW
+  app.get('/posts/:id', async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id).lean();
+      res.render('posts-show', { post });
+    } catch (err) {
+      console.log(err.message);
+    }
+  });
 }; 
 
 
