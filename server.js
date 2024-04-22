@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 require('./controllers/posts')(app);
+require('./controllers/comments.js')(app);
 
 
 const handlebars = require('express-handlebars');
