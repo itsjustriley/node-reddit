@@ -1,0 +1,11 @@
+{{> comments comments=comments postId=postId}} 
+{{#each comments}} 
+  <p>{{this.content}}</p> 
+  <p class="small text-right">{{this.author.username}}</p> 
+  <a href="/posts/{{postId}}/comments/{{this._id}}/replies/new" class="small text-right">Reply</a> }}
+  {{#each this.replies}} 
+    <p>{{this.content}}</p> 
+    <p class="small text-right">{{this.author.username}}</p> 
+    {{> comments comments=this.comments postId=postId}} 
+  {{/each}} 
+{{/each}} 

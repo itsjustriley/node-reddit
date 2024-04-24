@@ -1,4 +1,14 @@
 {{#each post.comments}}
   <p>{{this.content}}</p>
   <p class="small text-right">{{this.author.username}}</p>
+  <a href="/posts/{{../post._id}}/comments/{{this._id}}/replies/new" class="small text-right">Reply</a>
+  {{#each this.replies}}
+    <p>{{this.content}}</p>
+    <p class="small text-right">{{this.author.username}}</p>
+    {{#each this.replies}}
+      <p>{{this.content}}</p>
+      <p class="small text-right">{{this.author.username}}</p>
+      <a href="/posts/{{../../post._id}}/comments/{{../_id}}/replies/new" class="small text-right">Reply</a>
+    {{/each}}
+  {{/each}}
 {{/each}}
